@@ -1,0 +1,17 @@
+app 目录：核心代码
+
+- cli.py        命令行入口：demo/score/audit/review/edit/report/web
+- config.py     路径和配置，读取 .env
+- db.py         打开 SQLite、初始化数据库
+- schema.sql    8 张数据库表结构
+- seed.py       写入样例商品和素材
+- scoring.py    选品评分：硬性过滤 + 六维打分 + 淘汰原因
+- audit.py      素材合规审核规则
+- review.py     人工复核队列
+- editor.py     ffmpeg 自动剪辑
+- report.py     生成 JSON/MD/HTML 风险报告
+- ai.py         DeepSeek 调用 + Mock 降级
+- ffmpeg.py     查找 ffmpeg
+- media.py      生成合成测试视频
+- web.py        Web 页面路由
+- templates/    网页模板

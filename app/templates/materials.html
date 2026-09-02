@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t('materials_title') }}</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --panel: #ffffff;
+      --text: #20242b;
+      --muted: #667085;
+      --line: #e4e7ec;
+      --reject: #d92d20;
+      --reject-bg: #fee4e2;
+      --scored: #067647;
+      --scored-bg: #dcfae6;
+      --manual: #b54708;
+      --manual-bg: #fef0c7;
+      --accent: #1d4ed8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header { padding: 20px 28px; border-bottom: 1px solid var(--line); background: var(--panel); }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 4px 0 12px; color: var(--muted); font-size: 13px; }
+    nav a { color: var(--accent); text-decoration: none; font-size: 14px; margin-right: 18px; }
+    main { padding: 22px 28px 40px; }
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 980px; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; font-size: 14px; vertical-align: top; }
+    th { color: var(--muted); font-weight: 600; background: #fafbfc; }
+    tr:last-child td { border-bottom: 0; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.rejected { color: var(--reject); background: var(--reject-bg); }
+    .badge.approved { color: var(--scored); background: var(--scored-bg); }
+    .badge.manual { color: var(--manual); background: var(--manual-bg); }
+    .badge.pending { color: var(--muted); background: #eef2f6; }
+    .risk-high { color: var(--reject); font-weight: 700; }
+    .risk-medium { color: var(--manual); font-weight: 700; }
+    .risk-low { color: var(--scored); font-weight: 700; }
+    .checks { margin: 0; padding-left: 18px; }
+    .checks li { margin: 2px 0; }
+    .actions form { display: inline; }
+    .actions button {
+      margin-right: 6px;
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .actions .approve { color: var(--scored); border-color: #a6f4c5; }
+    .actions .reject { color: var(--reject); border-color: #fecdca; }
+    @media (max-width: 640px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      th, td { padding: 10px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ t('materials_title') }}</h1>
+    <p>{{ t('materials_subtitle') }}</p>
+    <nav>
+      <a href="{{ url_for('dashboard', lang=lang) }}">{{ t('nav_dashboard') }}</a>
+      <a href="{{ url_for('products', lang=lang) }}">{{ t('nav_products') }}</a>
+      <a href="{{ url_for('materials', lang=lang) }}">{{ t('nav_materials') }}</a>
+      <a href="{{ url_for('jobs', lang=lang) }}">{{ t('nav_jobs') }}</a>
+      <a href="{{ url_for('reports', lang=lang) }}">{{ t('nav_reports') }}</a>
+      <a href="{{ request.path }}?lang=zh">中文</a>
+      <a href="{{ request.path }}?lang=en">English</a>
+    </nav>
+  </header>
+  <main>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{ t('col_material') }}</th>
+            <th>{{ t('col_product') }}</th>
+            <th>{{ t('col_status') }}</th>
+            <th>{{ t('col_risk') }}</th>
+            <th>{{ t('col_checks') }}</th>
+            <th>{{ t('col_actions') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for material in materials %}
+          <tr>
+            <td>{{ material.title }}</td>
+            <td>{{ material.product_title }}</td>
+            <td><span class="badge {{ material.status }}">{{ t('status_' ~ material.status) }}</span></td>
+            <td class="risk-{{ material.risk_level }}">{{ t('risk_' ~ material.risk_level) }}</td>
+            <td>
+              {% if material.checks %}
+              <ul class="checks">
+                {% for check in material.checks %}
+                <li>{{ check.check_name }}：{{ check.evidence }}</li>
+                {% endfor %}
+              </ul>
+              {% else %}
+              <span class="risk-low">未命中规则</span>
+              {% endif %}
+            </td>
+            <td class="actions">
+              {% if material.can_review %}
+              <form method="post" action="{{ url_for('resolve_material', material_id=material.id, lang=lang) }}">
+                <button class="approve" name="decision" value="approve" type="submit">{{ t('action_approve') }}</button>
+                <button class="reject" name="decision" value="reject" type="submit">{{ t('action_reject') }}</button>
+              </form>
+              {% else %}
+              <span class="badge pending">{{ t('action_none') }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

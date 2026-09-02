@@ -1,0 +1,62 @@
+[
+  {
+    "sample_key": "cleaning-brush-01",
+    "source": "demo",
+    "title": "清洁刷商品演示素材",
+    "video_file": "demo_01.mp4",
+    "likes": 2300,
+    "comments": 118,
+    "publish_days": 6,
+    "transcript": "这款清洁刷现在只要9.9元，全网最低价，绝对好用，明星网红都在推荐。"
+  },
+  {
+    "sample_key": "foldable-storage-01",
+    "source": "demo",
+    "title": "收纳箱商品演示素材",
+    "video_file": "demo_02.mp4",
+    "likes": 860,
+    "comments": 41,
+    "publish_days": 10,
+    "transcript": "博主昵称小美：三件套可以叠放收纳，卧室衣柜都能用，拿取很方便。"
+  },
+  {
+    "sample_key": "usb-c-cable-01",
+    "source": "demo",
+    "title": "数据线商品演示素材",
+    "video_file": "demo_03.mp4",
+    "likes": 1500,
+    "comments": 73,
+    "publish_days": 3,
+    "transcript": "支持快充，接口很稳，办公室桌面常备一根。"
+  },
+  {
+    "sample_key": "brush-tray-01",
+    "source": "demo",
+    "title": "化妆刷收纳盒素材",
+    "video_file": "demo_04.mp4",
+    "likes": 420,
+    "comments": 25,
+    "publish_days": 8,
+    "transcript": "视频展示的是升级款，实际发货标准款，请人工核对。"
+  },
+  {
+    "sample_key": "teeth-whitening-01",
+    "source": "demo",
+    "title": "美白牙齿仪素材",
+    "video_file": "demo_05.mp4",
+    "likes": 3100,
+    "comments": 206,
+    "publish_days": 2,
+    "transcript": "使用一周牙齿明显变白，效果显著，能改善牙黄。"
+  },
+  {
+    "sample_key": "phone-stand-01",
+    "source": "demo",
+    "title": "手机支架商品演示素材",
+    "video_file": "demo_06.mp4",
+    "likes": 980,
+    "comments": 44,
+    "publish_days": 5,
+    "transcript": "手机和桌面都能放，角度可调，折叠后很小。"
+  }
+]

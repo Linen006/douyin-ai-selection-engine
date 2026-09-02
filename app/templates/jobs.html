@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t('jobs_title') }}</title>
+  <style>
+    :root { --bg:#f4f5f7; --panel:#fff; --text:#20242b; --muted:#667085; --line:#e4e7ec; --accent:#1d4ed8; --scored:#067647; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
+    header { padding:20px 28px; border-bottom:1px solid var(--line); background:var(--panel); }
+    header h1 { margin:0; font-size:22px; }
+    nav { margin-top:12px; }
+    nav a { color:var(--accent); text-decoration:none; font-size:14px; margin-right:18px; }
+    main { padding:22px 28px 40px; }
+    .toolbar { margin-bottom:16px; }
+    .toolbar button { padding:8px 12px; border:1px solid var(--line); border-radius:6px; background:var(--panel); cursor:pointer; font-size:14px; }
+    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    th, td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; font-size:14px; }
+    th { color:var(--muted); background:#fafbfc; }
+    tr:last-child td { border-bottom:0; }
+    .muted { color:var(--muted); }
+    @media (max-width:640px) { header, main { padding-left:16px; padding-right:16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ t('jobs_title') }}</h1>
+    <nav>
+      <a href="{{ url_for('dashboard', lang=lang) }}">{{ t('nav_dashboard') }}</a>
+      <a href="{{ url_for('products', lang=lang) }}">{{ t('nav_products') }}</a>
+      <a href="{{ url_for('materials', lang=lang) }}">{{ t('nav_materials') }}</a>
+      <a href="{{ url_for('jobs', lang=lang) }}">{{ t('nav_jobs') }}</a>
+      <a href="{{ url_for('reports', lang=lang) }}">{{ t('nav_reports') }}</a>
+      <a href="{{ request.path }}?lang=zh">中文</a>
+      <a href="{{ request.path }}?lang=en">English</a>
+    </nav>
+  </header>
+  <main>
+    <div class="toolbar">
+      <form method="post" action="{{ url_for('run_job', lang=lang) }}">
+        <button type="submit">{{ t('jobs_run') }}</button>
+      </form>
+    </div>
+    <table>
+      <thead><tr><th>{{ t('col_id') }}</th><th>{{ t('col_status') }}</th><th>{{ t('col_output') }}</th><th>{{ t('col_completed') }}</th></tr></thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr>
+          <td>{{ job.id }}</td>
+          <td>{{ job.status }}</td>
+          <td class="muted">{{ job.output_path or '-' }}</td>
+          <td class="muted">{{ job.completed_at or '-' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

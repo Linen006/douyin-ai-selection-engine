@@ -1,0 +1,7 @@
+data 目录：数据与生成产物
+
+- sample/products.json     样例商品
+- sample/materials.json    样例素材和口播文本
+- demo/media/              自动生成的合成测试视频
+- demo.db                  本地 SQLite 数据库
+- output/                  成片和风险报告，自动生成

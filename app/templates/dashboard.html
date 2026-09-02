@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ t('dashboard_title') }}</title>
+  <style>
+    :root {
+      --bg: #f4f5f7; --panel: #ffffff; --text: #20242b; --muted: #667085;
+      --line: #e4e7ec; --accent: #1d4ed8; --scored: #067647; --manual: #b54708;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    header { padding: 20px 28px; border-bottom: 1px solid var(--line); background: var(--panel); }
+    header h1 { margin: 0; font-size: 22px; }
+    header p { margin: 4px 0 12px; color: var(--muted); font-size: 13px; }
+    nav a { color: var(--accent); text-decoration: none; font-size: 14px; margin-right: 18px; }
+    main { padding: 22px 28px 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+    .metric { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
+    .metric .value { font-size: 30px; font-weight: 700; }
+    .metric .label { color: var(--muted); font-size: 13px; }
+    .metric.highlight { border-color: #c7d7fe; }
+    @media (max-width: 640px) { header, main { padding-left: 16px; padding-right: 16px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ t('dashboard_title') }}</h1>
+    <p>{{ t('dashboard_subtitle') }}：{{ ai_mode }}</p>
+    <nav>
+      <a href="{{ url_for('dashboard', lang=lang) }}">{{ t('nav_dashboard') }}</a>
+      <a href="{{ url_for('products', lang=lang) }}">{{ t('nav_products') }}</a>
+      <a href="{{ url_for('materials', lang=lang) }}">{{ t('nav_materials') }}</a>
+      <a href="{{ url_for('jobs', lang=lang) }}">{{ t('nav_jobs') }}</a>
+      <a href="{{ url_for('reports', lang=lang) }}">{{ t('nav_reports') }}</a>
+      <a href="{{ request.path }}?lang=zh">中文</a>
+      <a href="{{ request.path }}?lang=en">English</a>
+    </nav>
+  </header>
+  <main>
+    <div class="grid">
+      <div class="metric"><div class="value">{{ counts.products }}</div><div class="label">{{ t('dashboard_products') }}</div></div>
+      <div class="metric"><div class="value">{{ counts.materials }}</div><div class="label">{{ t('dashboard_materials') }}</div></div>
+      <div class="metric"><div class="value">{{ counts.audit_checks }}</div><div class="label">{{ t('dashboard_audit') }}</div></div>
+      <div class="metric highlight"><div class="value">{{ pending }}</div><div class="label">{{ t('dashboard_pending') }}</div></div>
+      <div class="metric"><div class="value">{{ counts.edit_jobs }}</div><div class="label">{{ t('dashboard_jobs') }}</div></div>
+      <div class="metric"><div class="value">{{ counts.reports }}</div><div class="label">{{ t('dashboard_reports') }}</div></div>
+    </div>
+  </main>
+</body>
+</html>

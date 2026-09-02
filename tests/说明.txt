@@ -1,0 +1,8 @@
+tests 目录：自动化测试
+
+- test_smoke.py    数据库、样例数据、ffmpeg 发现
+- test_scoring.py  选品评分规则
+- test_audit.py    素材审核和人工复核
+- test_editor.py   剪辑和报告生成
+
+运行命令：.venv\Scripts\python.exe -m pytest -q
