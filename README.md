@@ -11,6 +11,20 @@
 导入样例 → 选品评分 → 素材审核 → 人工复核 → ffmpeg 剪辑 → 风险报告
 ```
 
+## 界面截图
+
+| 工作台 | 商品选品评分 |
+| --- | --- |
+| ![工作台](assets/screenshots/dashboard.png) | ![商品选品评分](assets/screenshots/products.png) |
+
+| 素材合规审核 | 剪辑任务 |
+| --- | --- |
+| ![素材合规审核](assets/screenshots/materials.png) | ![剪辑任务](assets/screenshots/jobs.png) |
+
+| 风险报告 |
+| --- |
+| ![风险报告](assets/screenshots/reports.png) |
+
 ## 特点
 
 - 可解释选品：硬性过滤 + 六维评分，每个商品都有通过/淘汰原因
@@ -85,6 +99,8 @@ docs/           项目方案与同类对比
 ## 同类项目对比
 
 多数项目只做通用剪辑或只做选品分析。本项目把选品、合规、复核、剪辑、报告串成闭环。详见 [docs/COMPARISON.md](docs/COMPARISON.md)。
+
+每个文件的用途见 [docs/FILES.md](docs/FILES.md)。
 
 ## 测试
 
