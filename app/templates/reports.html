@@ -1,52 +1,8 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ t('reports_title') }}</title>
-  <style>
-    :root { --bg:#f4f5f7; --panel:#fff; --text:#20242b; --muted:#667085; --line:#e4e7ec; --accent:#1d4ed8; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family:"Segoe UI","Microsoft YaHei",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
-    header { padding:20px 28px; border-bottom:1px solid var(--line); background:var(--panel); }
-    header h1 { margin:0; font-size:22px; }
-    nav { margin-top:12px; }
-    nav a { color:var(--accent); text-decoration:none; font-size:14px; margin-right:18px; }
-    main { padding:22px 28px 40px; }
-    table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
-    th, td { padding:12px 14px; border-bottom:1px solid var(--line); text-align:left; font-size:14px; }
-    th { color:var(--muted); background:#fafbfc; }
-    tr:last-child td { border-bottom:0; }
-    .muted { color:var(--muted); }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>{{ t('reports_title') }}</h1>
-    <nav>
-      <a href="{{ url_for('dashboard', lang=lang) }}">{{ t('nav_dashboard') }}</a>
-      <a href="{{ url_for('products', lang=lang) }}">{{ t('nav_products') }}</a>
-      <a href="{{ url_for('materials', lang=lang) }}">{{ t('nav_materials') }}</a>
-      <a href="{{ url_for('jobs', lang=lang) }}">{{ t('nav_jobs') }}</a>
-      <a href="{{ url_for('reports', lang=lang) }}">{{ t('nav_reports') }}</a>
-      <a href="{{ request.path }}?lang=zh">中文</a>
-      <a href="{{ request.path }}?lang=en">English</a>
-    </nav>
-  </header>
-  <main>
-    <table>
-      <thead><tr><th>{{ t('col_id') }}</th><th>{{ t('col_type') }}</th><th>{{ t('col_file') }}</th><th>{{ t('col_actions') }}</th></tr></thead>
-      <tbody>
-        {% for report in reports %}
-        <tr>
-          <td>{{ report.id }}</td>
-          <td>{{ report.report_type }}</td>
-          <td class="muted">{{ report.output_path }}</td>
-          <td><a href="{{ url_for('download_report', report_id=report.id, lang=lang) }}">{{ t('reports_download') }}</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </main>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}{{ t('reports_title') }} · GuardFlow{% endblock %}
+{% block eyebrow %}TRACEABLE RISK REPORTS{% endblock %}
+{% block heading %}{{ t('reports_title') }}{% endblock %}
+{% block content %}
+<section class="page-intro"><div><span class="section-kicker">发布依据可追溯</span><h2>把审核结论变成可交付的风险凭证</h2><p>集中下载 JSON、Markdown 与 HTML 报告，便于复核、归档和演示。</p></div><span class="outline-stat"><strong>{{ reports|length }}</strong> 份已生成报告</span></section>
+<section class="report-grid">{% for report in reports %}<article class="report-card"><span class="report-icon"><i class="bi bi-file-earmark-text"></i></span><div><span class="report-type">{{ report.report_type|upper }}</span><h3>发布风险报告 #{{ report.id }}</h3><p>{{ report.output_path }}</p></div><a href="{{ url_for('download_report', report_id=report.id, lang=lang) }}" aria-label="下载报告"><i class="bi bi-download"></i></a></article>{% else %}<div class="panel empty-state wide-empty"><i class="bi bi-file-earmark-plus"></i><p>运行剪辑任务后，系统会自动生成多格式风险报告。</p></div>{% endfor %}</section>
+{% endblock %}

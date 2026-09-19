@@ -46,12 +46,58 @@ def create_app() -> Flask:
         pending = conn.execute(
             "SELECT COUNT(*) AS n FROM review_tasks WHERE status = 'pending'"
         ).fetchone()["n"]
+        material_status = {
+            row["status"]: row["n"]
+            for row in conn.execute(
+                "SELECT status, COUNT(*) AS n FROM materials GROUP BY status"
+            ).fetchall()
+        }
+        approved = material_status.get("approved", 0)
+        audited = sum(material_status.values())
+        safe_rate = round(approved * 100 / audited, 1) if audited else 0
+        queue = conn.execute(
+            """
+            SELECT m.id, m.title, m.status, p.title AS product_title,
+                   COALESCE(MAX(a.risk_level), 'low') AS risk_level
+            FROM materials m
+            JOIN products p ON p.id = m.product_id
+            LEFT JOIN audit_checks a ON a.material_id = m.id
+            WHERE m.status IN ('manual', 'rejected', 'approved')
+            GROUP BY m.id
+            ORDER BY CASE m.status WHEN 'manual' THEN 0 WHEN 'rejected' THEN 1 ELSE 2 END, m.id
+            LIMIT 3
+            """
+        ).fetchall()
+        risk_rows = conn.execute(
+            "SELECT risk_level, COUNT(*) AS n FROM audit_checks GROUP BY risk_level"
+        ).fetchall()
+        risk_counts = {row["risk_level"]: row["n"] for row in risk_rows}
         conn.close()
+        thumbnails = [
+            "images/product-cleaning-brush.png",
+            "images/product-storage-box.png",
+            "images/product-teeth-device.png",
+        ]
+        queue_items = [
+            {
+                "id": row["id"],
+                "title": row["product_title"],
+                "material_title": row["title"],
+                "status": row["status"],
+                "risk_level": row["risk_level"],
+                "thumbnail": thumbnails[index % len(thumbnails)],
+            }
+            for index, row in enumerate(queue)
+        ]
         return render_template(
             "dashboard.html",
             counts=counts,
             pending=pending,
             ai_mode=ai_mode(),
+            safe_rate=safe_rate,
+            intercepted=material_status.get("rejected", 0),
+            queue_items=queue_items,
+            risk_counts=risk_counts,
         )
 
     @app.route("/products")

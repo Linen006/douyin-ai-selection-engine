@@ -1,52 +1,21 @@
-<!doctype html>
-<html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ t('dashboard_title') }}</title>
-  <style>
-    :root {
-      --bg: #f4f5f7; --panel: #ffffff; --text: #20242b; --muted: #667085;
-      --line: #e4e7ec; --accent: #1d4ed8; --scored: #067647; --manual: #b54708;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
-    header { padding: 20px 28px; border-bottom: 1px solid var(--line); background: var(--panel); }
-    header h1 { margin: 0; font-size: 22px; }
-    header p { margin: 4px 0 12px; color: var(--muted); font-size: 13px; }
-    nav a { color: var(--accent); text-decoration: none; font-size: 14px; margin-right: 18px; }
-    main { padding: 22px 28px 40px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
-    .metric { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; }
-    .metric .value { font-size: 30px; font-weight: 700; }
-    .metric .label { color: var(--muted); font-size: 13px; }
-    .metric.highlight { border-color: #c7d7fe; }
-    @media (max-width: 640px) { header, main { padding-left: 16px; padding-right: 16px; } }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>{{ t('dashboard_title') }}</h1>
-    <p>{{ t('dashboard_subtitle') }}：{{ ai_mode }}</p>
-    <nav>
-      <a href="{{ url_for('dashboard', lang=lang) }}">{{ t('nav_dashboard') }}</a>
-      <a href="{{ url_for('products', lang=lang) }}">{{ t('nav_products') }}</a>
-      <a href="{{ url_for('materials', lang=lang) }}">{{ t('nav_materials') }}</a>
-      <a href="{{ url_for('jobs', lang=lang) }}">{{ t('nav_jobs') }}</a>
-      <a href="{{ url_for('reports', lang=lang) }}">{{ t('nav_reports') }}</a>
-      <a href="{{ request.path }}?lang=zh">中文</a>
-      <a href="{{ request.path }}?lang=en">English</a>
-    </nav>
-  </header>
-  <main>
-    <div class="grid">
-      <div class="metric"><div class="value">{{ counts.products }}</div><div class="label">{{ t('dashboard_products') }}</div></div>
-      <div class="metric"><div class="value">{{ counts.materials }}</div><div class="label">{{ t('dashboard_materials') }}</div></div>
-      <div class="metric"><div class="value">{{ counts.audit_checks }}</div><div class="label">{{ t('dashboard_audit') }}</div></div>
-      <div class="metric highlight"><div class="value">{{ pending }}</div><div class="label">{{ t('dashboard_pending') }}</div></div>
-      <div class="metric"><div class="value">{{ counts.edit_jobs }}</div><div class="label">{{ t('dashboard_jobs') }}</div></div>
-      <div class="metric"><div class="value">{{ counts.reports }}</div><div class="label">{{ t('dashboard_reports') }}</div></div>
-    </div>
-  </main>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}AI 发布安全中枢{% endblock %}
+{% block content %}
+<section class="hero-card">
+  <img class="hero-bg" src="{{ url_for('static', filename='images/hero-waves.png') }}" alt="" aria-hidden="true">
+  <div class="hero-copy"><span class="hero-kicker"><i class="bi bi-stars"></i> AI 发布安全中枢</span><h2>让每一条内容，<br><em>安全地创造增长</em></h2><p>从选品到素材审核、人工复核与风险报告，<br>用可解释 AI 守住短视频电商发布底线。</p><a class="primary-button" href="{{ url_for('materials', lang=lang) }}">进入审核队列 <i class="bi bi-arrow-right"></i></a></div>
+  <img class="hero-object" src="{{ url_for('static', filename='images/hero-risk-shield.png') }}" alt="紫蓝色 3D 安全盾牌">
+  <div class="hero-trust"><i class="bi bi-lightning-charge-fill"></i><div><strong>规则 + AI 双引擎</strong><small>关键结果均可追溯</small></div></div>
+</section>
+<section class="metric-grid" aria-label="核心安全指标">
+  <article class="metric-card"><span class="metric-icon violet"><i class="bi bi-patch-check"></i></span><div><small>安全发布率</small><strong>{{ safe_rate }}%</strong><em class="positive"><i class="bi bi-arrow-up-right"></i> 基于已审素材</em></div></article>
+  <article class="metric-card"><span class="metric-icon amber"><i class="bi bi-person-exclamation"></i></span><div><small>待人工复核</small><strong>{{ pending }}</strong><em>条内容需要判断</em></div></article>
+  <article class="metric-card"><span class="metric-icon coral"><i class="bi bi-shield-x"></i></span><div><small>今日拦截</small><strong>{{ intercepted }}</strong><em>高风险内容</em></div></article>
+  <article class="metric-card"><span class="metric-icon cyan"><i class="bi bi-box-seam"></i></span><div><small>已评估商品</small><strong>{{ counts.products }}</strong><em>{{ counts.audit_checks }} 项规则命中</em></div></article>
+</section>
+<section class="dashboard-grid">
+  <article class="panel chart-panel"><div class="panel-heading"><div><h3>发布安全趋势</h3><p>近 7 天审核结果概览</p></div><span class="soft-pill">最近 7 天 <i class="bi bi-chevron-down"></i></span></div><div class="chart-legend"><span><i class="legend-dot violet-dot"></i>安全发布</span><span><i class="legend-dot blue-dot"></i>风险拦截</span></div><canvas id="safetyChart" data-approved="{{ counts.materials - intercepted }}" data-blocked="{{ intercepted }}" aria-label="发布安全趋势折线图"></canvas></article>
+  <article class="panel risk-panel"><div class="panel-heading"><div><h3>风险分布</h3><p>当前规则命中结构</p></div><a href="{{ url_for('materials', lang=lang) }}">查看详情</a></div>{% set total_risk = (risk_counts.get('high', 0) + risk_counts.get('medium', 0) + risk_counts.get('low', 0)) or 1 %}<div class="risk-ring" style="--high: {{ risk_counts.get('high', 0) * 100 / total_risk }}%; --medium: {{ risk_counts.get('medium', 0) * 100 / total_risk }}%"><div><strong>{{ total_risk }}</strong><small>规则命中</small></div></div><div class="risk-list"><div><span><i class="legend-dot coral-dot"></i>高风险</span><strong>{{ risk_counts.get('high', 0) }}</strong></div><div><span><i class="legend-dot amber-dot"></i>中风险</span><strong>{{ risk_counts.get('medium', 0) }}</strong></div><div><span><i class="legend-dot cyan-dot"></i>低风险</span><strong>{{ risk_counts.get('low', 0) }}</strong></div></div></article>
+</section>
+<section class="panel queue-panel"><div class="panel-heading"><div><h3>智能审核队列</h3><p>优先处理不确定性最高的素材</p></div><a class="secondary-button" href="{{ url_for('materials', lang=lang) }}">查看全部 <i class="bi bi-arrow-right"></i></a></div><div class="queue-list">{% for item in queue_items %}<a class="queue-item" href="{{ url_for('materials', lang=lang) }}"><img src="{{ url_for('static', filename=item.thumbnail) }}" alt="{{ item.title }}"><div class="queue-copy"><strong>{{ item.title }}</strong><small>{{ item.material_title }}</small></div><span class="risk-badge {{ item.risk_level }}">{{ {'high':'高风险','medium':'中风险','low':'低风险'}.get(item.risk_level, '待判断') }}</span><span class="status-badge {{ item.status }}">{{ {'manual':'待复核','rejected':'已拦截','approved':'已通过'}.get(item.status, item.status) }}</span><i class="bi bi-chevron-right"></i></a>{% else %}<div class="empty-state"><i class="bi bi-check2-circle"></i><p>当前没有需要处理的素材</p></div>{% endfor %}</div></section>
+{% endblock %}

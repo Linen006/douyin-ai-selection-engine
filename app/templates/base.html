@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="{{ 'zh-CN' if lang == 'zh' else 'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0d16">
+  <title>{% block title %}AI 发布安全中枢{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="{{ url_for('dashboard', lang=lang) }}" aria-label="AI 发布安全中枢"><span class="brand-mark"><i class="bi bi-shield-check"></i></span><span><strong>GuardFlow</strong><small>AI COMMERCE</small></span></a>
+      <nav class="side-nav" aria-label="Primary navigation">
+        <a class="{{ 'active' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard', lang=lang) }}"><i class="bi bi-grid-1x2-fill"></i><span>{{ t('nav_dashboard') }}</span></a>
+        <a class="{{ 'active' if request.endpoint == 'products' }}" href="{{ url_for('products', lang=lang) }}"><i class="bi bi-box-seam"></i><span>{{ t('nav_products') }}</span></a>
+        <a class="{{ 'active' if request.endpoint in ('materials', 'resolve_material') }}" href="{{ url_for('materials', lang=lang) }}"><i class="bi bi-shield-exclamation"></i><span>{{ t('nav_materials') }}</span></a>
+        <a class="{{ 'active' if request.endpoint in ('jobs', 'run_job') }}" href="{{ url_for('jobs', lang=lang) }}"><i class="bi bi-scissors"></i><span>{{ t('nav_jobs') }}</span></a>
+        <a class="{{ 'active' if request.endpoint in ('reports', 'download_report') }}" href="{{ url_for('reports', lang=lang) }}"><i class="bi bi-file-earmark-bar-graph"></i><span>{{ t('nav_reports') }}</span></a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="ai-status"><span></span><div><strong>AI 引擎在线</strong><small>{{ ai_mode|default('Mock') }} 模式</small></div></div>
+        <div class="user-card"><span class="avatar">林</span><div><strong>项目演示账号</strong><small>安全运营</small></div><i class="bi bi-three-dots"></i></div>
+      </div>
+    </aside>
+    <section class="workspace">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" aria-label="打开导航"><i class="bi bi-list"></i></button>
+        <div class="topbar-copy"><small>{% block eyebrow %}AI 电商安全工作台{% endblock %}</small><h1>{% block heading %}晚上好，发布安全由你掌控{% endblock %}</h1></div>
+        <div class="topbar-actions"><label class="search"><i class="bi bi-search"></i><input type="search" placeholder="搜索商品、素材、报告" aria-label="搜索"></label><a class="lang-switch" href="{{ request.path }}?lang={{ 'en' if lang == 'zh' else 'zh' }}">{{ 'EN' if lang == 'zh' else '中' }}</a><button class="icon-button" aria-label="通知"><i class="bi bi-bell"></i><span class="notification-dot"></span></button></div>
+      </header>
+      <main>{% block content %}{% endblock %}</main>
+    </section>
+  </div>
+  <div class="sidebar-scrim" id="sidebarScrim"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
