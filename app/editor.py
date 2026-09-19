@@ -43,18 +43,33 @@ def probe_duration(path: Path) -> float:
     return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
 
 
-def create_edit_job(conn) -> int:
-    """Create a montage job from all approved materials."""
+def create_edit_job(conn, product_id: int | None = None) -> int:
+    """Create one montage job from approved materials for a single product."""
+    if product_id is None:
+        product = conn.execute(
+            """
+            SELECT product_id
+            FROM materials
+            WHERE status = 'approved'
+            ORDER BY product_id, id
+            LIMIT 1
+            """
+        ).fetchone()
+        if product is None:
+            raise RuntimeError("没有已通过审核的素材，无法创建剪辑任务")
+        product_id = product["product_id"]
+
     rows = conn.execute(
         """
         SELECT id, product_id, video_path
         FROM materials
-        WHERE status = 'approved'
+        WHERE status = 'approved' AND product_id = ?
         ORDER BY id
-        """
+        """,
+        (product_id,),
     ).fetchall()
     if not rows:
-        raise RuntimeError("没有已通过审核的素材，无法创建剪辑任务")
+        raise RuntimeError(f"商品 {product_id} 没有已通过审核的素材，无法创建剪辑任务")
 
     segments = []
     for position, row in enumerate(rows, start=1):
@@ -77,7 +92,7 @@ def create_edit_job(conn) -> int:
             (product_id, plan_json, status, output_path)
         VALUES (?, ?, 'planned', '')
         """,
-        (rows[0]["product_id"], json.dumps(segments, ensure_ascii=False)),
+        (product_id, json.dumps(segments, ensure_ascii=False)),
     )
     job_id = cursor.lastrowid
 
